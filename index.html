@@ -11,11 +11,10 @@
         
         /* CABEÇALHO DA OS */
         .os-header { display: grid; grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 20px; margin-bottom: 25px; align-items: center; }
-        @media(min-width: 600px) { .os-header { grid-template-columns: 180px 1fr; } }
+        @media(min-width: 600px) { .os-header { grid-template-columns: 220px 1fr; } }
         
-        .logo-placeholder { width: 100%; height: 100px; border: 2px dashed #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #f8fafc; cursor: pointer; position: relative; overflow: hidden; }
-        .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
-        .logo-text { font-size: 11px; color: #64748b; text-align: center; padding: 5px; }
+        /* LOGO FIXO TREND CONTROLS COM TRATAMENTO DE COR */
+        .logo-trend { width: 100%; height: auto; max-height: 90px; object-fit: contain; filter: invert(1) contrast(200%); }
         .os-title { text-align: right; }
         .os-title h1 { font-size: 24px; color: #0284c7; text-transform: uppercase; }
         .os-title p { font-size: 13px; color: #64748b; margin-top: 5px; }
@@ -29,8 +28,8 @@
         
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group label { font-size: 12px; font-weight: 600; color: #475569; }
-        .form-group input, .form-group select { padding: 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; background: #fff; }
-        .form-group input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+        .form-group input, .form-group select, .form-group textarea { padding: 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; background: #fff; }
+        .form-group input:focus, .form-group textarea:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
         .form-group input[readonly] { background: #f1f5f9; color: #64748b; }
 
         /* CHECKBOX DE VISTORIA */
@@ -47,19 +46,29 @@
         .measurement-table th { background: #f8fafc; color: #475569; font-weight: bold; }
         .measurement-table input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; text-align: center; }
 
+        /* SEÇÃO DE EVIDÊNCIAS FOTOGRÁFICAS */
+        .btn-upload-photos { background: #475569; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 15px; }
+        .btn-upload-photos:hover { background: #334155; }
+        .photo-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 10px; }
+        .photo-container { position: relative; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #f8fafc; aspect-ratio: 4/3; }
+        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-remove-photo { position: absolute; top: 5px; right: 5px; background: rgba(220, 38, 38, 0.85); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; font-weight: bold; cursor: pointer; line-height: 22px; text-align: center; }
+
         /* BOTÕES */
         .action-bar { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-        .btn-pdf { background-color: #0284c7; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-pdf { background-color: #0284c7; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; transition: background 0.2s; }
         .btn-pdf:hover { background-color: #0369a1; }
 
         /* LAYOUT DE IMPRESSÃO / GERAÇÃO DE PDF */
         @media print {
             body { background-color: #fff; padding: 0; }
             .os-container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
-            .action-bar, .logo-text, input[type="file"] { display: none !important; }
-            .form-group input, .form-group select, .measurement-table input { border: none !important; border-bottom: 1px solid #000 !important; border-radius: 0 !important; padding: 5px 0 !important; background: transparent !important; }
+            .action-bar, .btn-upload-photos, .btn-remove-photo, input[type="file"] { display: none !important; }
+            .form-group input, .form-group select, .measurement-table input, .form-group textarea { border: none !important; border-bottom: 1px solid #000 !important; border-radius: 0 !important; padding: 5px 0 !important; background: transparent !important; resize: none; }
             .check-item { background: transparent !important; border: none !important; padding: 5px 0 !important; }
-            .logo-placeholder { border: none !important; background: transparent !important; }
+            .photo-gallery { grid-template-columns: 1fr 1fr !important; page-break-inside: avoid; }
+            .photo-container { border: 1px solid #000 !important; }
+            .logo-trend { filter: invert(0) brightness(0) !important; } /* Garante nitidez máxima preta na impressão */
         }
     </style>
 </head>
@@ -67,9 +76,8 @@
 
 <div class="os-container">
     <div class="os-header">
-        <div class="logo-placeholder" onclick="document.getElementById('fileLogo').click()">
-            <input type="file" id="fileLogo" accept="image/*" style="display: none;" onchange="carregarLogo(this)">
-            <div id="logoContainer" class="logo-text">📐 Clique para carregar o Logo da Empresa</div>
+        <div>
+            <img class="logo-trend" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABOCAYAAABcMmE0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6gcDEgIuE6Zp6AAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUOvd95EAAAIySURBVHja7dw9bhRBFIXhMzYg0pAlshIWIAnZgSREyBpxmYwshA0gIAtgB0ggIAtA9p6v9Vv3u7p66OnpftXp80mOlInOfXW6X3ffqqskkiw9pA9X8rM78F1SAnHglEDEQBw4JRAxEEfO7Wq5pC7fV3L8+0z7bE6d90XmBmLtV6v/f6mKjSscEAIhEAIRAmHtlEBIEAIhEAIRAmHtlECuYvG9D+PAtWdO3vsyK6fufZYFp04XgRAIgRCIEAhrpwRCghAIgRCIEAhrpwRyFYvvfRiHAnHgnBy698VpAnHiCIRAunw6mBf/m6rYiM0FIhACIRAisbVTAiFBCIRACESisbVTIvEDsXbx/2FUIBIPB06IxA+EQLp8Onj+C8fG9gIhEAIRCYmYEqkQiB+IzQXC2mFUIBKP977MxolIBD8QAunyyWHZ8PZ678tsnCYQCIEIiK2dEogfiM0FwmL96fXel9k4EYlACKTDp4Plk8O6NfD93pfZPBAuEIEQiIDY2imB+IHYXCDW7WfHe18vThOIQCQCIZAu/uSwfrKwdq873vt6cZpAtu8e9O2b40AgfSAE0uWv/N87wYFAuECEvSAs/R9z6N4XpwlE9oEQSIeH7mshYh8IgXSBv289EAsXCIF0geuB8M0FInm7uB4In3wgeSAW/989C8R6nCcQAunwyWHf8HbvWSDmKBAuEIFAIAIhuwMvAhG7mYgYgUAEEolpAonMBOIEAnFkNoEEIhAIn8wEEpnpvS9OEIhAxCcwIBAIRP4EAmwCCUTG997L7m3tVfKje+u8Okh+9gD/VfX8B/Q/7gA1m5/zAAAAAElFTkSuQmCC" alt="Trend Controls">
         </div>
         <div class="os-title">
             <h1>Ordem de Serviço</h1>
@@ -87,7 +95,7 @@
             <div class="grid-inputs" style="margin-top: 15px;">
                 <div class="form-group">
                     <label>Modelo do Controlador</label>
-                    <input type="text" id="modeloControlador" placeholder="Ex: Siemens S7-1200 / Rockwell ControlLogix">
+                    <input type="text" id="modeloControlador" placeholder="Ex: Siemens S7-1200 / Trend IQ4">
                 </div>
                 <div class="form-group">
                     <label>Data de Execução</label>
@@ -161,8 +169,15 @@
     <div class="form-section">
         <h3>📝 Observações e Recomendações Técnicas</h3>
         <div class="form-group">
-            <textarea id="obsTecnicas" rows="3" placeholder="Insira notas adicionais sobre o estado do painel, inconformidades encontradas ou componentes substituídos..."></textarea>
+            <textarea id="obsTecnicas" rows="3" placeholder="Insira notas adicionais sobre inconformidades encontradas, testes de loops de automação ou componentes substituídos..."></textarea>
         </div>
+    </div>
+
+    <div class="form-section">
+        <h3>📸 Evidências Fotográficas do Relatório</h3>
+        <button class="btn-upload-photos" onclick="document.getElementById('uploadAnexos').click()">🖼️ Anexar Imagens Técnicas</button>
+        <input type="file" id="uploadAnexos" accept="image/*" multiple style="display: none;" onchange="gerenciarFotosAnexadas(this)">
+        <div id="galeriaEvidencias" class="photo-gallery"></div>
     </div>
 
     <div class="action-bar">
@@ -171,32 +186,41 @@
 </div>
 
 <script>
-    // Carrega automaticamente a data atual formatada na inicialização
+    // Configura data/hora automatizada de auditoria
     document.addEventListener("DOMContentLoaded", () => {
-        const dataCampo = document.getElementById("dataExecucao");
-        const hoje = new Date();
-        dataCampo.value = hoje.toLocaleDateString('pt-BR') + ' ' + hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        atualizarCarimboDataHora();
     });
 
-    // Manipula o upload e exibição dinâmica da logo da empresa
-    function carregarLogo(input) {
-        if (input.files && input.files[0]) {
-            const leitor = new FileReader();
-            leitor.onload = function(e) {
-                const container = document.getElementById("logoContainer");
-                container.innerHTML = `<img src="${e.target.result}" alt="Logo Empresa">`;
-            };
-            leitor.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // Atualiza a data antes do trigger final de impressão do PDF
-    function gerarOSComDataEPdf() {
+    function atualizarCarimboDataHora() {
         const dataCampo = document.getElementById("dataExecucao");
         const hoje = new Date();
         dataCampo.value = hoje.toLocaleDateString('pt-BR') + ' ' + hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        
-        // Dispara a engine de PDF do sistema operacional
+    }
+
+    // Gerenciador de fotos do relatório técnico (Suporta múltiplas imagens)
+    function gerenciarFotosAnexadas(input) {
+        const galeria = document.getElementById("galeriaEvidencias");
+        if (input.files) {
+            Array.from(input.files).forEach(arquivo => {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    const container = document.createElement("div");
+                    container.className = "photo-container";
+                    container.innerHTML = `
+                        <img src="${e.target.result}" alt="Evidência Preventiva">
+                        <button class="btn-remove-photo" onclick="this.parentElement.remove()">✕</button>
+                    `;
+                    galeria.appendChild(container);
+                };
+                leitor.readAsDataURL(arquivo);
+            });
+        }
+        input.value = ''; // Reseta o input para permitir re-upload do mesmo arquivo se necessário
+    }
+
+    function gerarOSComDataEPdf() {
+        atualizarCarimboDataHora();
+        // Trona o fluxo nativo chamando o spooler de impressão otimizado via CSS
         window.print();
     }
 </script>
