@@ -13,8 +13,8 @@
         .os-header { display: grid; grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 20px; margin-bottom: 25px; align-items: center; }
         @media(min-width: 600px) { .os-header { grid-template-columns: 220px 1fr; } }
         
-        /* LOGO FIXO TREND CONTROLS COM TRATAMENTO DE COR */
-        .logo-trend { width: 100%; height: auto; max-height: 90px; object-fit: contain; filter: invert(1) contrast(200%); }
+        /* LOGO FIXO TREND CONTROLS TRATADO COM PRECISÃO */
+        .logo-trend { width: 100%; height: auto; max-height: 80px; object-fit: contain; filter: invert(1) contrast(150%) brightness(95%); }
         .os-title { text-align: right; }
         .os-title h1 { font-size: 24px; color: #0284c7; text-transform: uppercase; }
         .os-title p { font-size: 13px; color: #64748b; margin-top: 5px; }
@@ -68,7 +68,7 @@
             .check-item { background: transparent !important; border: none !important; padding: 5px 0 !important; }
             .photo-gallery { grid-template-columns: 1fr 1fr !important; page-break-inside: avoid; }
             .photo-container { border: 1px solid #000 !important; }
-            .logo-trend { filter: invert(0) brightness(0) !important; } /* Garante nitidez máxima preta na impressão */
+            .logo-trend { filter: invert(0) brightness(0) !important; }
         }
     </style>
 </head>
@@ -77,7 +77,7 @@
 <div class="os-container">
     <div class="os-header">
         <div>
-            <img class="logo-trend" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABOCAYAAABcMmE0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6gcDEgIuE6Zp6AAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUOvd95EAAAIySURBVHja7dw9bhRBFIXhMzYg0pAlshIWIAnZgSREyBpxmYwshA0gIAtgB0ggIAtA9p6v9Vv3u7p66OnpftXp80mOlInOfXW6X3ffqqskkiw9pA9X8rM78F1SAnHglEDEQBw4JRAxEEfO7Wq5pC7fV3L8+0z7bE6d90XmBmLtV6v/f6mKjSscEAIhEAIRAmHtlEBIEAIhEAIRAmHtlECuYvG9D+PAtWdO3vsyK6fufZYFp04XgRAIgRCIEAhrpwRCghAIgRCIEAhrpwRyFYvvfRiHAnHgnBy698VpAnHiCIRAunw6mBf/m6rYiM0FIhACIRAisbVTAiFBCIRACESisbVTIvEDsXbx/2FUIBIPB06IxA+EQLp8Onj+C8fG9gIhEAIRCYmYEqkQiB+IzQXC2mFUIBKP977MxolIBD8QAunyyWHZ8PZ678tsnCYQCIEIiK2dEogfiM0FwmL96fXel9k4EYlACKTDp4Plk8O6NfD93pfZPBAuEIEQiIDY2imB+IHYXCDW7WfHe18vThOIQCQCIZAu/uSwfrKwdq873vt6cZpAtu8e9O2b40AgfSAE0uWv/N87wYFAuECEvSAs/R9z6N4XpwlE9oEQSIeH7mshYh8IgXSBv289EAsXCIF0geuB8M0FInm7uB4In3wgeSAW/989C8R6nCcQAunwyWHf8HbvWSDmKBAuEIFAIAIhuwMvAhG7mYgYgUAEEolpAonMBOIEAnFkNoEEIhAIn8wEEpnpvS9OEIhAxCcwIBAIRP4EAmwCCUTG997L7m3tVfKje+u8Okh+9gD/VfX8B/Q/7gA1m5/zAAAAAElFTkSuQmCC" alt="Trend Controls">
+            <img class="logo-trend" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABOCAYAAABcMmE0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACp0lEQVR4nO2by43bMBSGZ0S9uAOnA08X6SAdwOnA6SAdwO7AdBA7cDvwdOAO3A6SClwH7gBv8vAsS7ZoSbYlynofgCAsPhI/SgRFXgAsy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy6ptA8AtgD8AhvDnA4Bv6+YmAGgAvAB4W7Uksm8XAH8A/Fo39yP7bXU6g/69wO9A09X8A76u6f4KD+KBEAgPIRAeCIsTBIQEIRAhEAmExQkC6YoXN6vTHeHhZD8uXp2uzm3FjcuCUIgXCIHwQFicICAkCIEIgUggLE4QSFc8u1mZzhAeTlbD2enCNoE48UAIpMunC+fD76YtNt5cIAIhECIhEjvOEggJQiBCIBIdO84Sif8Qay8vH04FInE4HEIkfiAE0uXThfPh/7wttre5QAQiECIxEts6JhI/EJMLhMvN8eS8LbdxIhKBEIiXT4flkwN7N3B+3pY5PJlAEC4QgYjESN8pEby6IBAXmYwTkaicHNI7v94fOq9n3gH4XWw8B73/qXW6E6K4fO766cL8eFvP2L/mAuESmYwTkah8OnT9fH+d7v8LpA/E5eR0Yv42N8eB7H868g60fDo/3PscxP6Y+9f8A762t1Z66F7O6Y07UIdv06f030O0EwSIhED0bN+F3b6WpzmYv8P9f4HwQEiHh+7N56p1XyB9IF2+gRCIEMid7Wv6Z6D56f4f+WreAhEIEC4QIRAhkMj26wRifgYCEUisbT+C8EAI5I6wOEA68uRwdwKBeCBEImv7P9e97uU/YFmWFfGv7Xv6Y27q4F/X2v9W/wA7/P+2K2Fv6AAAAABJRU5ErkJggg==" alt="Trend Controls Automação">
         </div>
         <div class="os-title">
             <h1>Ordem de Serviço</h1>
@@ -186,7 +186,6 @@
 </div>
 
 <script>
-    // Configura data/hora automatizada de auditoria
     document.addEventListener("DOMContentLoaded", () => {
         atualizarCarimboDataHora();
     });
@@ -197,7 +196,6 @@
         dataCampo.value = hoje.toLocaleDateString('pt-BR') + ' ' + hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Gerenciador de fotos do relatório técnico (Suporta múltiplas imagens)
     function gerenciarFotosAnexadas(input) {
         const galeria = document.getElementById("galeriaEvidencias");
         if (input.files) {
@@ -215,12 +213,11 @@
                 leitor.readAsDataURL(arquivo);
             });
         }
-        input.value = ''; // Reseta o input para permitir re-upload do mesmo arquivo se necessário
+        input.value = '';
     }
 
     function gerarOSComDataEPdf() {
         atualizarCarimboDataHora();
-        // Trona o fluxo nativo chamando o spooler de impressão otimizado via CSS
         window.print();
     }
 </script>
