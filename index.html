@@ -10,15 +10,21 @@
         .os-container { max-width: 850px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; }
         
         /* CABEÇALHO DA OS - ESTILO ORIGINAL COM FUNDO PRETO */
-        .os-header { display: grid; grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #0284c7; padding: 20px; margin-bottom: 25px; align-items: center; background-color: #000; color: #fff;}
-        @media(min-width: 600px) { .os-header { grid-template-columns: 220px 1fr; } }
+        .os-header { display: grid; grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #0284c7; padding: 20px; margin-bottom: 25px; align-items: center; background-color: #000; color: #fff; border-radius: 6px; }
+        @media(min-width: 600px) { .os-header { grid-template-columns: 240px 1fr; } }
         
-        /* LOGO TREND CONTROLS - ASSINATURA DIGITAL COMPLETA E SEM PERDAS */
-        .logo-trend { width: 100%; height: auto; max-height: 80px; object-fit: contain; }
+        /* ÁREA DE UPLOAD DO LOGO DINÂMICO */
+        .logo-upload-container { width: 100%; height: 90px; border: 2px dashed #64748b; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; padding: 5px; background: rgba(255,255,255,0.05); position: relative; transition: background 0.2s; }
+        .logo-upload-container:hover { background: rgba(255,255,255,0.1); border-color: #38bdf8; }
+        .logo-upload-container span { font-size: 10px; color: #cbd5e1; text-align: center; text-transform: uppercase; font-weight: bold; margin-top: 5px; }
+        .logo-upload-container svg { fill: #cbd5e1; width: 24px; height: 24px; }
+        
+        /* PREVISÃO DO LOGO INSERIDO */
+        .preview-logo { width: 100%; height: 100%; object-fit: contain; display: none; position: absolute; top: 0; left: 0; padding: 5px; background: #000; border-radius: 4px; }
         
         .os-title { text-align: right; }
         .os-title h1 { font-size: 24px; color: #0284c7; text-transform: uppercase; }
-        .os-title p { font-size: 13px; color: #fff; margin-top: 5px; } /* Texto do título em branco no cabeçalho preto */
+        .os-title p { font-size: 13px; color: #fff; margin-top: 5px; }
 
         /* SEÇÕES DO FORMULÁRIO */
         .form-section { margin-bottom: 25px; }
@@ -47,7 +53,7 @@
         .measurement-table th { background: #f8fafc; color: #475569; font-weight: bold; }
         .measurement-table input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; text-align: center; }
 
-        /* SEÇÃO DE EVIDÊNCIAS FOTOGRÁFICAS */
+        /* EVIDÊNCIAS FOTOGRÁFICAS */
         .btn-upload-photos { background: #475569; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 15px; }
         .btn-upload-photos:hover { background: #334155; }
         .photo-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 10px; }
@@ -56,8 +62,6 @@
         .btn-remove-photo { position: absolute; top: 5px; right: 5px; background: rgba(220, 38, 38, 0.85); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; font-weight: bold; cursor: pointer; line-height: 22px; text-align: center; }
 
         /* IDENTIFICAÇÃO DO TÉCNICO EXECUTANTE */
-        .form-section { margin-bottom: 25px; }
-        .tecnico-label { font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 5px;}
         .input-tecnico { width: 100%; padding: 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px;}
 
         /* BOTÕES */
@@ -69,14 +73,15 @@
         @media print {
             body { background-color: #fff; padding: 0; }
             .os-container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
-            .action-bar, .btn-upload-photos, .btn-remove-photo, input[type="file"] { display: none !important; }
+            .action-bar, .btn-upload-photos, .btn-remove-photo, input[type="file"], .logo-upload-container svg, .logo-upload-container span { display: none !important; }
+            .logo-upload-container { border: none !important; background: transparent !important; }
             .form-group input, .form-group select, .measurement-table input, .form-group textarea, .input-tecnico { border: none !important; border-bottom: 1px solid #000 !important; border-radius: 0 !important; padding: 5px 0 !important; background: transparent !important; resize: none; color: #000 !important;}
             .check-item { background: transparent !important; border: none !important; padding: 5px 0 !important; }
             .photo-gallery { grid-template-columns: 1fr 1fr !important; page-break-inside: avoid; }
             .photo-container { border: 1px solid #000 !important; }
-            .os-header { background-color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* Garante fundo preto no cabeçalho na impressão */
-            .logo-trend { -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* Garante logo na impressão */
-            .os-title p { color: #fff !important; } /* Texto branco na impressão no cabeçalho preto */
+            .os-header { background-color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } 
+            .preview-logo { display: block !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .os-title p { color: #fff !important; } 
         }
     </style>
 </head>
@@ -84,9 +89,16 @@
 
 <div class="os-container">
     <div class="os-header">
-        <div>
-            <img class="logo-trend" src="data:image/png;base64,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" alt="Trend Controls Automação">
+        <input type="file" id="uploadLogo" accept="image/*" style="display: none;" onchange="carregarLogoEmpresa(this)">
+        
+        <div class="logo-upload-container" onclick="document.getElementById('uploadLogo').click()">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            <span>Adicionar Logo da Empresa</span>
+            <img id="logoPreview" class="preview-logo" alt="Logo da Empresa">
         </div>
+
         <div class="os-title">
             <h1>Ordem de Serviço</h1>
             <p>Manutenção Preventiva em Controladores de Automação (CLP / DDC)</p>
@@ -204,7 +216,6 @@
 </div>
 
 <script>
-    // Configura carimbo automatizado de data/hora
     document.addEventListener("DOMContentLoaded", () => {
         atualizarCarimboDataHora();
     });
@@ -215,7 +226,20 @@
         dataCampo.value = hoje.toLocaleDateString('pt-BR') + ' ' + hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     }
 
-    // Gerencia o fluxo de fotos técnicas (upload, exibição e remoção)
+    // Processa a imagem do logo escolhida pelo usuário
+    function carregarLogoEmpresa(input) {
+        const preview = document.getElementById("logoPreview");
+        if (input.files && input.files[0]) {
+            const leitor = new FileReader();
+            leitor.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            }
+            leitor.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Gerencia o fluxo de fotos anexadas (evidências do painel/clp)
     function gerenciarFotosAnexadas(input) {
         const galeria = document.getElementById("galeriaEvidencias");
         if (input.files) {
@@ -233,11 +257,10 @@
                 leitor.readAsDataURL(arquivo);
             });
         }
-        input.value = ''; // Reseta input para permitir re-upload do mesmo arquivo
+        input.value = ''; 
     }
 
     function gerarOSComDataEPdf() {
-        // Validação: Técnico não pode esquecer de assinar o documento
         const tecnico = document.getElementById("tecnicoNome").value.trim();
         if(!tecnico) {
             alert("⚠️ Por favor, insira o nome do Técnico Executante antes de salvar a OS.");
