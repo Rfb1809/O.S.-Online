@@ -9,15 +9,16 @@
         body { background-color: #f1f5f9; color: #1e293b; padding: 20px; }
         .os-container { max-width: 850px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; }
         
-        /* CABEÇALHO DA OS */
-        .os-header { display: grid; grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 20px; margin-bottom: 25px; align-items: center; }
+        /* CABEÇALHO DA OS - ESTILO ORIGINAL COM FUNDO PRETO */
+        .os-header { display: grid; grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #0284c7; padding: 20px; margin-bottom: 25px; align-items: center; background-color: #000; color: #fff;}
         @media(min-width: 600px) { .os-header { grid-template-columns: 220px 1fr; } }
         
-        /* LOGO ORIGINAL EM ALTA RESOLUÇÃO */
-        .logo-trend { width: 100%; height: auto; max-height: 95px; object-fit: contain; border-radius: 6px; background-color: #000; padding: 5px; }
+        /* LOGO TREND CONTROLS - ASSINATURA DIGITAL COMPLETA E SEM PERDAS */
+        .logo-trend { width: 100%; height: auto; max-height: 80px; object-fit: contain; }
+        
         .os-title { text-align: right; }
         .os-title h1 { font-size: 24px; color: #0284c7; text-transform: uppercase; }
-        .os-title p { font-size: 13px; color: #64748b; margin-top: 5px; }
+        .os-title p { font-size: 13px; color: #fff; margin-top: 5px; } /* Texto do título em branco no cabeçalho preto */
 
         /* SEÇÕES DO FORMULÁRIO */
         .form-section { margin-bottom: 25px; }
@@ -46,13 +47,18 @@
         .measurement-table th { background: #f8fafc; color: #475569; font-weight: bold; }
         .measurement-table input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; text-align: center; }
 
-        /* EVIDÊNCIAS FOTOGRÁFICAS */
+        /* SEÇÃO DE EVIDÊNCIAS FOTOGRÁFICAS */
         .btn-upload-photos { background: #475569; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 15px; }
         .btn-upload-photos:hover { background: #334155; }
         .photo-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 10px; }
         .photo-container { position: relative; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #f8fafc; aspect-ratio: 4/3; }
         .photo-container img { width: 100%; height: 100%; object-fit: cover; }
         .btn-remove-photo { position: absolute; top: 5px; right: 5px; background: rgba(220, 38, 38, 0.85); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; font-weight: bold; cursor: pointer; line-height: 22px; text-align: center; }
+
+        /* IDENTIFICAÇÃO DO TÉCNICO EXECUTANTE */
+        .form-section { margin-bottom: 25px; }
+        .tecnico-label { font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 5px;}
+        .input-tecnico { width: 100%; padding: 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px;}
 
         /* BOTÕES */
         .action-bar { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
@@ -64,11 +70,13 @@
             body { background-color: #fff; padding: 0; }
             .os-container { box-shadow: none; border: none; padding: 0; max-width: 100%; }
             .action-bar, .btn-upload-photos, .btn-remove-photo, input[type="file"] { display: none !important; }
-            .form-group input, .form-group select, .measurement-table input, .form-group textarea { border: none !important; border-bottom: 1px solid #000 !important; border-radius: 0 !important; padding: 5px 0 !important; background: transparent !important; resize: none; }
+            .form-group input, .form-group select, .measurement-table input, .form-group textarea, .input-tecnico { border: none !important; border-bottom: 1px solid #000 !important; border-radius: 0 !important; padding: 5px 0 !important; background: transparent !important; resize: none; color: #000 !important;}
             .check-item { background: transparent !important; border: none !important; padding: 5px 0 !important; }
             .photo-gallery { grid-template-columns: 1fr 1fr !important; page-break-inside: avoid; }
             .photo-container { border: 1px solid #000 !important; }
-            .logo-trend { background-color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .os-header { background-color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* Garante fundo preto no cabeçalho na impressão */
+            .logo-trend { -webkit-print-color-adjust: exact; print-color-adjust: exact; } /* Garante logo na impressão */
+            .os-title p { color: #fff !important; } /* Texto branco na impressão no cabeçalho preto */
         }
     </style>
 </head>
@@ -77,7 +85,7 @@
 <div class="os-container">
     <div class="os-header">
         <div>
-            <img class="logo-trend" src="data:image/png;base64,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" alt="Trend Controls Automação">
+            <img class="logo-trend" src="data:image/png;base64,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" alt="Trend Controls Automação">
         </div>
         <div class="os-title">
             <h1>Ordem de Serviço</h1>
@@ -181,10 +189,12 @@
     </div>
 
     <div class="form-section">
-        <h3>👨‍🔧 Identificação do Técnico Responsável</h3>
-        <div class="form-group">
-            <label>Nome do Técnico Executante</label>
-            <input type="text" id="tecnicoNome" placeholder="Digite seu nome completo">
+        <h3>👨‍🔧 Identificação do Técnico</h3>
+        <div class="sub-form">
+            <div class="form-group">
+                <label>Executante (Nome do Técnico)</label>
+                <input type="text" id="tecnicoNome" class="input-tecnico" placeholder="Digite seu nome completo">
+            </div>
         </div>
     </div>
 
@@ -194,6 +204,7 @@
 </div>
 
 <script>
+    // Configura carimbo automatizado de data/hora
     document.addEventListener("DOMContentLoaded", () => {
         atualizarCarimboDataHora();
     });
@@ -204,6 +215,7 @@
         dataCampo.value = hoje.toLocaleDateString('pt-BR') + ' ' + hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     }
 
+    // Gerencia o fluxo de fotos técnicas (upload, exibição e remoção)
     function gerenciarFotosAnexadas(input) {
         const galeria = document.getElementById("galeriaEvidencias");
         if (input.files) {
@@ -221,14 +233,14 @@
                 leitor.readAsDataURL(arquivo);
             });
         }
-        input.value = '';
+        input.value = ''; // Reseta input para permitir re-upload do mesmo arquivo
     }
 
     function gerarOSComDataEPdf() {
-        // Validação simples para lembrar o técnico de assinar o documento
-        const nomeTecnico = document.getElementById("tecnicoNome").value.trim();
-        if(!nomeTecnico) {
-            alert("⚠️ Por favor, insira o nome do Técnico Executante antes de gerar a OS.");
+        // Validação: Técnico não pode esquecer de assinar o documento
+        const tecnico = document.getElementById("tecnicoNome").value.trim();
+        if(!tecnico) {
+            alert("⚠️ Por favor, insira o nome do Técnico Executante antes de salvar a OS.");
             document.getElementById("tecnicoNome").focus();
             return;
         }
@@ -239,5 +251,3 @@
 </script>
 </body>
 </html>
-
-```
