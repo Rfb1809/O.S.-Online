@@ -13,8 +13,8 @@
         .os-header { display: grid; grid-template-columns: 1fr; gap: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 20px; margin-bottom: 25px; align-items: center; }
         @media(min-width: 600px) { .os-header { grid-template-columns: 220px 1fr; } }
         
-        /* LOGO FIXO TREND CONTROLS TRATADO COM PRECISÃO */
-        .logo-trend { width: 100%; height: auto; max-height: 80px; object-fit: contain; filter: invert(1) contrast(150%) brightness(95%); }
+        /* LOGO ORIGINAL EM ALTA RESOLUÇÃO */
+        .logo-trend { width: 100%; height: auto; max-height: 95px; object-fit: contain; border-radius: 6px; background-color: #000; padding: 5px; }
         .os-title { text-align: right; }
         .os-title h1 { font-size: 24px; color: #0284c7; text-transform: uppercase; }
         .os-title p { font-size: 13px; color: #64748b; margin-top: 5px; }
@@ -46,7 +46,7 @@
         .measurement-table th { background: #f8fafc; color: #475569; font-weight: bold; }
         .measurement-table input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; text-align: center; }
 
-        /* SEÇÃO DE EVIDÊNCIAS FOTOGRÁFICAS */
+        /* EVIDÊNCIAS FOTOGRÁFICAS */
         .btn-upload-photos { background: #475569; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; display: inline-block; margin-bottom: 15px; }
         .btn-upload-photos:hover { background: #334155; }
         .photo-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 10px; }
@@ -68,7 +68,7 @@
             .check-item { background: transparent !important; border: none !important; padding: 5px 0 !important; }
             .photo-gallery { grid-template-columns: 1fr 1fr !important; page-break-inside: avoid; }
             .photo-container { border: 1px solid #000 !important; }
-            .logo-trend { filter: invert(0) brightness(0) !important; }
+            .logo-trend { background-color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -77,7 +77,7 @@
 <div class="os-container">
     <div class="os-header">
         <div>
-            <img class="logo-trend" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABOCAYAAABcMmE0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACp0lEQVR4nO2by43bMBSGZ0S9uAOnA08X6SAdwOnA6SAdwO7AdBA7cDvwdOAO3A6SClwH7gBv8vAsS7ZoSbYlynofgCAsPhI/SgRFXgAsy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy7Isy6ptA8AtgD8AhvDnA4Bv6+YmAGgAvAB4W7Uksm8XAH8A/Fo39yP7bXU6g/69wO9A09X8A76u6f4KD+KBEAgPIRAeCIsTBIQEIRAhEAmExQkC6YoXN6vTHeHhZD8uXp2uzm3FjcuCUIgXCIHwQFicICAkCIEIgUggLE4QSFc8u1mZzhAeTlbD2enCNoE48UAIpMunC+fD76YtNt5cIAIhECIhEjvOEggJQiBCIBIdO84Sif8Qay8vH04FInE4HEIkfiAE0uXThfPh/7wttre5QAQiECIxEts6JhI/EJMLhMvN8eS8LbdxIhKBEIiXT4flkwN7N3B+3pY5PJlAEC4QgYjESN8pEby6IBAXmYwTkaicHNI7v94fOq9n3gH4XWw8B73/qXW6E6K4fO766cL8eFvP2L/mAuESmYwTkah8OnT9fH+d7v8LpA/E5eR0Yv42N8eB7H868g60fDo/3PscxP6Y+9f8A762t1Z66F7O6Y07UIdv06f030O0EwSIhED0bN+F3b6WpzmYv8P9f4HwQEiHh+7N56p1XyB9IF2+gRCIEMid7Wv6Z6D56f4f+WreAhEIEC4QIRAhkMj26wRifgYCEUisbT+C8EAI5I6wOEA68uRwdwKBeCBEImv7P9e97uU/YFmWFfGv7Xv6Y27q4F/X2v9W/wA7/P+2K2Fv6AAAAABJRU5ErkJggg==" alt="Trend Controls Automação">
+            <img class="logo-trend" src="data:image/png;base64,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" alt="Trend Controls Automação">
         </div>
         <div class="os-title">
             <h1>Ordem de Serviço</h1>
@@ -180,6 +180,14 @@
         <div id="galeriaEvidencias" class="photo-gallery"></div>
     </div>
 
+    <div class="form-section">
+        <h3>👨‍🔧 Identificação do Técnico Responsável</h3>
+        <div class="form-group">
+            <label>Nome do Técnico Executante</label>
+            <input type="text" id="tecnicoNome" placeholder="Digite seu nome completo">
+        </div>
+    </div>
+
     <div class="action-bar">
         <button class="btn-pdf" onclick="gerarOSComDataEPdf()">💾 Salvar e Gerar OS em PDF</button>
     </div>
@@ -217,6 +225,14 @@
     }
 
     function gerarOSComDataEPdf() {
+        // Validação simples para lembrar o técnico de assinar o documento
+        const nomeTecnico = document.getElementById("tecnicoNome").value.trim();
+        if(!nomeTecnico) {
+            alert("⚠️ Por favor, insira o nome do Técnico Executante antes de gerar a OS.");
+            document.getElementById("tecnicoNome").focus();
+            return;
+        }
+        
         atualizarCarimboDataHora();
         window.print();
     }
