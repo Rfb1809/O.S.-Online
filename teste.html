@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comissionamento de Fibras - DIO</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --panel-bg: #ffffff;
+            --text-main: #333333;
+            --port-free: #e0e6ed;
+            --port-free-hover: #c0cddb;
+            --port-selected: #f1c40f;
+            --port-connected: #3498db;
+            --port-highlight: #e74c3c;
+            --border-color: #dcdde1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .instructions {
+            background-color: var(--panel-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .rack-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            flex-wrap: wrap;
+        }
+
+        .rack {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 400px;
+        }
+
+        .rack-title {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .dio-panel {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 8px;
+            background-color: #2c3e50;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .port {
+            aspect-ratio: 1;
+            background-color: var(--port-free);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .port:hover:not(.connected):not(.selected) {
+            background-color: var(--port-free-hover);
+        }
+
+        .port.selected {
+            background-color: var(--port-selected);
+            color: #333;
+            box-shadow: 0 0 8px var(--port-selected);
+            transform: scale(1.1);
+        }
+
+        .port.connected {
+            background-color: var(--port-connected);
+            color: white;
+        }
+
+        .port.highlight {
+            background-color: var(--port-highlight) !important;
+            color: white !important;
+            box-shadow: 0 0 12px var(--port-highlight);
+            transform: scale(1.15);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 15px;
+            background: var(--panel-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        /* Table */
+        .table-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 800px;
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Painel de Comissionamento Óptico</h1>
+
+    <div class="instructions">
+        <strong>Como criar uma rota:</strong> Clique em uma porta livre no RACK A (ficará amarela). Em seguida, clique em uma porta livre no RACK B. <br>
+        <strong>Rastreamento visual:</strong> Passe o mouse sobre qualquer porta conectada (azul) para destacar instantaneamente a extremidade oposta (em vermelho).
+    </div>
+
+    <div class="rack-container">
+        <!-- Rack A -->
+        <div class="rack">
+            <div class="rack-title">DIO - RACK A</div>
+            <div class="dio-panel" id="dioA">
+                <!-- Portas injetadas via JS -->
+            </div>
+        </div>
+
+        <!-- Rack B -->
+        <div class="rack">
+            <div class="rack-title">DIO - RACK B</div>
+            <div class="dio-panel" id="dioB">
+                <!-- Portas injetadas via JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background: var(--port-free);"></div> Livre</div>
+        <div class="legend-item"><div class="legend-color" style="background: var(--port-selected);"></div> Selecionada</div>
+        <div class="legend-item"><div class="legend-color" style="background: var(--port-connected);"></div> Conectada</div>
+        <div class="legend-item"><div class="legend-color" style="background: var(--port-highlight);"></div> Rastreamento (Hover)</div>
+    </div>
+
+    <div class="table-container">
+        <h3 style="margin-top: 0; color: #2c3e50;">Conexões Ativas</h3>
+        <table id="connectionsTable">
+            <thead>
+                <tr>
+                    <th>Porta (RACK A)</th>
+                    <th>Porta (RACK B)</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Conexões injetadas via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const PORTS_PER_DIO = 24;
+        let selectedA = null;
+        let selectedB = null;
+        let connections = []; // Array of {a: portId, b: portId, id: connectionId}
+
+        function createDIO(rackId) {
+            const container = document.getElementById(rackId);
+            for (let i = 1; i <= PORTS_PER_DIO; i++) {
+                const port = document.createElement('div');
+                port.className = 'port';
+                port.textContent = i;
+                port.dataset.rack = rackId;
+                port.dataset.port = i;
+                
+                port.addEventListener('click', () => handlePortClick(rackId, i));
+                port.addEventListener('mouseenter', () => handleHover(rackId, i, true));
+                port.addEventListener('mouseleave', () => handleHover(rackId, i, false));
+                
+                container.appendChild(port);
+            }
+        }
+
+        function handlePortClick(rackId, portNum) {
+            const portEl = getPortEl(rackId, portNum);
+            
+            // Se a porta já estiver conectada, ignora o clique
+            if (portEl.classList.contains('connected')) return;
+
+            if (rackId === 'dioA') {
+                if (selectedA === portNum) {
+                    selectedA = null; // Deselecionar
+                } else {
+                    selectedA = portNum;
+                }
+            } else if (rackId === 'dioB') {
+                if (selectedB === portNum) {
+                    selectedB = null;
+                } else {
+                    selectedB = portNum;
+                }
+            }
+
+            updateSelectionUI();
+
+            // Se ambos foram selecionados, cria a conexão
+            if (selectedA !== null && selectedB !== null) {
+                createConnection(selectedA, selectedB);
+                selectedA = null;
+                selectedB = null;
+                updateSelectionUI();
+            }
+        }
+
+        function createConnection(portA, portB) {
+            const connId = Date.now().toString();
+            connections.push({ id: connId, a: portA, b: portB });
+            renderConnections();
+        }
+
+        function removeConnection(connId) {
+            connections = connections.filter(c => c.id !== connId);
+            renderConnections();
+        }
+
+        function getPortEl(rackId, portNum) {
+            return document.querySelector(`.port[data-rack="${rackId}"][data-port="${portNum}"]`);
+        }
+
+        function updateSelectionUI() {
+            // Limpa as seleções visuais primeiro
+            document.querySelectorAll('.port').forEach(p => {
+                if (!p.classList.contains('connected')) {
+                    p.classList.remove('selected');
+                }
+            });
+
+            if (selectedA !== null) {
+                getPortEl('dioA', selectedA).classList.add('selected');
+            }
+            if (selectedB !== null) {
+                getPortEl('dioB', selectedB).classList.add('selected');
+            }
+        }
+
+        function renderConnections() {
+            // Resetar todas as portas para não-conectadas
+            document.querySelectorAll('.port').forEach(p => {
+                p.classList.remove('connected');
+                p.removeAttribute('data-conn-id');
+            });
+
+            const tbody = document.querySelector('#connectionsTable tbody');
+            tbody.innerHTML = '';
+
+            connections.forEach(conn => {
+                // Atualiza UI dos DIOs
+                const pA = getPortEl('dioA', conn.a);
+                const pB = getPortEl('dioB', conn.b);
+                
+                pA.classList.add('connected');
+                pA.dataset.connId = conn.id;
+                
+                pB.classList.add('connected');
+                pB.dataset.connId = conn.id;
+
+                // Adiciona na tabela
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>Porta ${conn.a}</td>
+                    <td>Porta ${conn.b}</td>
+                    <td><button class="delete-btn" onclick="removeConnection('${conn.id}')">Remover Patch</button></td>
+                `;
+                
+                // Efeito de hover também nas linhas da tabela
+                tr.addEventListener('mouseenter', () => highlightConnection(conn.id, true));
+                tr.addEventListener('mouseleave', () => highlightConnection(conn.id, false));
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleHover(rackId, portNum, isEntering) {
+            const portEl = getPortEl(rackId, portNum);
+            if (portEl.classList.contains('connected')) {
+                const connId = portEl.dataset.connId;
+                highlightConnection(connId, isEntering);
+            }
+        }
+
+        function highlightConnection(connId, isActive) {
+            const ports = document.querySelectorAll(`.port[data-conn-id="${connId}"]`);
+            ports.forEach(p => {
+                if (isActive) {
+                    p.classList.add('highlight');
+                } else {
+                    p.classList.remove('highlight');
+                }
+            });
+        }
+
+        // Inicializar aplicação
+        createDIO('dioA');
+        createDIO('dioB');
+
+    </script>
+</body>
+</html>
+
