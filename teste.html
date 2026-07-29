@@ -3,210 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comissionamento de Fibras - DIO</title>
+    <title>Comissionamento Siemon - LightVerse</title>
+    <!-- Biblioteca para exportação em PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            --bg-color: #f4f7f6;
-            --panel-bg: #ffffff;
-            --text-main: #333333;
-            --port-free: #e0e6ed;
-            --port-free-hover: #c0cddb;
-            --port-selected: #f1c40f;
-            --port-connected: #3498db;
-            --port-highlight: #e74c3c;
-            --border-color: #dcdde1;
+            --bg-page: #f0f2f5;
+            --rack-bg: #111111;
+            --rack-border: #333333;
+            --siemon-blue: #0078D7;
+            --siemon-blue-hover: #005a9e;
+            --patch-cord: #FF6600; /* Laranja da foto */
+            --text-dark: #2c3e50;
+            --panel-white: #ffffff;
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-page);
             margin: 0;
             padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding-bottom: 80px;
         }
 
-        h1 {
-            font-size: 1.5rem;
-            margin-top: 10px;
-            text-align: center;
-            color: #2c3e50;
-        }
+        h1 { font-size: 1.5rem; color: var(--text-dark); margin: 10px 0; text-align: center; }
 
-        .instructions {
-            background-color: var(--panel-bg);
-            padding: 12px 15px;
-            border-radius: 8px;
-            border-left: 5px solid #3498db;
+        .toolbar {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            max-width: 800px;
+            flex-wrap: wrap;
+            justify-content: center;
             width: 100%;
+            max-width: 1200px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
             font-size: 0.9rem;
-            line-height: 1.4;
+        }
+        
+        button:hover { opacity: 0.8; }
+        .btn-add { background-color: #27ae60; color: white; }
+        .btn-pdf { background-color: #c0392b; color: white; }
+        .btn-primary { background-color: #2980b9; color: white; }
+        .btn-danger { background-color: #e74c3c; color: white; }
+
+        .status-bar {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #f39c12;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+            margin-bottom: 20px;
         }
 
         .rack-container {
             display: flex;
             gap: 20px;
-            justify-content: center;
             width: 100%;
             max-width: 1200px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .rack {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            flex: 1;
-            min-width: 280px;
-            max-width: 500px;
-        }
-
-        .rack-title {
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 8px;
-        }
-
-        .dio-panel {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr); /* 6 colunas para celular, ajusta em telas maiores */
-            gap: 8px;
-            background-color: #2c3e50;
-            padding: 12px;
-            border-radius: 6px;
-        }
-
-        @media (min-width: 450px) {
-            .dio-panel {
-                grid-template-columns: repeat(12, 1fr); /* 12 colunas em telas maiores */
-            }
-        }
-
-        .port {
-            aspect-ratio: 1;
-            background-color: var(--port-free);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .port:hover:not(.connected):not(.selected) {
-            background-color: var(--port-free-hover);
-        }
-
-        .port.selected {
-            background-color: var(--port-selected);
-            color: #333;
-            box-shadow: 0 0 8px var(--port-selected);
-            transform: scale(1.1);
-        }
-
-        .port.connected {
-            background-color: var(--port-connected);
-            color: white;
-        }
-
-        .port.highlight {
-            background-color: var(--port-highlight) !important;
-            color: white !important;
-            box-shadow: 0 0 12px var(--port-highlight);
-            transform: scale(1.15);
-        }
-
-        /* Legend */
-        .legend {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-            padding: 12px;
-            background: var(--panel-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            max-width: 800px;
-            width: 100%;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-        }
-
-        .legend-color {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-        }
-
-        /* Table */
-        .table-container {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 800px;
-            background: var(--panel-bg);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            min-width: 300px;
-        }
-
-        th, td {
-            text-align: left;
+            background-color: var(--rack-bg);
+            border: 2px solid var(--rack-border);
+            border-radius: 4px;
             padding: 10px;
-            border-bottom: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .rack-header {
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
             font-size: 0.9rem;
         }
 
-        th {
-            background-color: #f8f9fa;
-            color: #2c3e50;
-        }
-
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 6px 10px;
+        .rack-header span.brand { font-weight: bold; letter-spacing: 1px; }
+        
+        .dio-panel {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr); /* 6 colunas para mobile */
+            gap: 6px;
+            background-color: #0a0a0a;
+            padding: 8px;
             border-radius: 4px;
+        }
+
+        @media (min-width: 480px) {
+            .dio-panel { grid-template-columns: repeat(12, 1fr); }
+        }
+
+        /* Estilo simulando acoplador LC Duplex Siemon */
+        .port {
+            aspect-ratio: 1;
+            background-color: var(--siemon-blue);
+            border: 2px solid #00447a;
+            border-radius: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: white;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 0.8rem;
+            position: relative;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
         }
 
-        .delete-btn:hover {
-            background-color: #c0392b;
+        .port:hover { background-color: var(--siemon-blue-hover); }
+
+        /* Simulação do cordão óptico conectado */
+        .port.connected::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            width: 8px;
+            height: 12px;
+            background-color: var(--patch-cord);
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            z-index: 10;
         }
 
-        /* Modal customizado para toque em celulares */
+        .port.highlight {
+            border-color: #f1c40f;
+            box-shadow: 0 0 10px #f1c40f;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -215,244 +164,373 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.6);
             justify-content: center;
             align-items: center;
+            padding: 15px;
         }
 
         .modal-content {
-            background-color: white;
+            background-color: var(--panel-white);
             padding: 20px;
             border-radius: 8px;
-            text-align: center;
-            width: 85%;
-            max-width: 320px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .modal-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
             width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .modal-cancel {
-            background-color: #95a5a6;
-            margin-top: 8px;
+        .modal-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+
+        .modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        
+        .conn-info {
+            background: #e8f4f8;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--siemon-blue);
+        }
+
+        /* Relatório PDF Oculto */
+        #pdf-report { display: none; background: white; padding: 20px; color: black; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 6px; text-align: left; }
+        .pdf-table th { background-color: #eee; }
     </style>
 </head>
 <body>
 
-    <h1>Comissionamento de Fibras</h1>
+    <h1>Comissionamento de Fibras (LightVerse)</h1>
 
-    <div class="instructions">
-        📱 <strong>Como usar no celular:</strong><br>
-        • <strong>Criar:</strong> Toque em uma porta livre no Rack A e depois em uma no Rack B.<br>
-        • <strong>Ver/Excluir Conexão:</strong> Toque em qualquer porta azul conectada para ver a rota ou apagá-la. No PC, basta passar o mouse.
+    <div class="toolbar">
+        <button class="btn-add" onclick="addNewDIO()">+ Acrescentar DIO</button>
+        <button class="btn-pdf" onclick="generatePDF()">📄 Exportar Relatório PDF</button>
     </div>
 
-    <div class="rack-container">
-        <!-- Rack A -->
-        <div class="rack">
-            <div class="rack-title">DIO - RACK A</div>
-            <div class="dio-panel" id="dioA"></div>
-        </div>
-
-        <!-- Rack B -->
-        <div class="rack">
-            <div class="rack-title">DIO - RACK B</div>
-            <div class="dio-panel" id="dioB"></div>
-        </div>
+    <div id="statusBar" class="status-bar">
+        Modo de Conexão: Selecione a porta de destino...
+        <button onclick="cancelConnection()" style="margin-left: 10px; padding: 4px 8px;">Cancelar</button>
     </div>
 
-    <div class="legend">
-        <div class="legend-item"><div class="legend-color" style="background: var(--port-free);"></div> Livre</div>
-        <div class="legend-item"><div class="legend-color" style="background: var(--port-selected);"></div> Selecionada</div>
-        <div class="legend-item"><div class="legend-color" style="background: var(--port-connected);"></div> Conectada</div>
-        <div class="legend-item"><div class="legend-color" style="background: var(--port-highlight);"></div> Rastreio</div>
+    <div class="rack-container" id="rackContainer">
+        <!-- Racks serão injetados aqui -->
     </div>
 
-    <div class="table-container">
-        <h3 style="margin-top: 0; color: #2c3e50; font-size: 1.1rem;">Conexões Ativas</h3>
-        <table id="connectionsTable">
-            <thead>
-                <tr>
-                    <th>Rack A</th>
-                    <th>Rack B</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <!-- Modal de Ação ao Clicar em Porta Conectada (Focado em Mobile) -->
-    <div id="connModal" class="modal">
+    <!-- Modal de Porta -->
+    <div id="portModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="margin-top:0; color:#2c3e50;">Conexão Ativa</h3>
-            <p id="modalDesc" style="color:#555; font-size:0.95rem;"></p>
-            <button class="modal-btn" id="modalDeleteBtn">Remover Conexão</button>
-            <button class="modal-btn modal-cancel" onclick="closeModal()">Fechar</button>
+            <div class="modal-header" id="modalTitle">DIO X - Porta Y</div>
+            
+            <div id="connStatus" class="conn-info" style="display: none;"></div>
+
+            <div class="form-group">
+                <label>Informações da Via (Destino / Cliente / Cor):</label>
+                <input type="text" id="portInfoInput" placeholder="Ex: Cliente XYZ - Fibra Verde">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="savePortInfo()">💾 Salvar Informações</button>
+                <button class="btn-add" id="btnConnect" onclick="startConnection()">🔗 Fazer Patch Cord</button>
+                <button class="btn-danger" id="btnDisconnect" style="display:none;" onclick="removeConnection()">✂ Remover Patch Cord</button>
+                <button style="background-color: #95a5a6; color: white;" onclick="closeModal()">Fechar</button>
+            </div>
         </div>
+    </div>
+
+    <!-- Container Oculto para o PDF -->
+    <div id="pdf-report">
+        <h2>Relatório de Comissionamento Óptico</h2>
+        <p>Data: <span id="pdfDate"></span></p>
+        <div id="pdfTablesContainer"></div>
     </div>
 
     <script>
         const PORTS_PER_DIO = 24;
-        let selectedA = null;
-        let selectedB = null;
-        let connections = [];
-        let activeModalConnId = null;
+        let dioCounter = 0;
+        
+        // Estrutura principal de dados
+        let dataStore = {
+            dios: [],
+            connections: [] // {id, portA: {dioId, portNum}, portB: {dioId, portNum}}
+        };
 
-        function createDIO(rackId) {
-            const container = document.getElementById(rackId);
-            for (let i = 1; i <= PORTS_PER_DIO; i++) {
-                const port = document.createElement('div');
-                port.className = 'port';
-                port.textContent = i;
-                port.dataset.rack = rackId;
-                port.dataset.port = i;
-                
-                port.addEventListener('click', () => handlePortClick(rackId, i));
-                
-                // Suporte a Hover para PC
-                port.addEventListener('mouseenter', () => handleHover(rackId, i, true));
-                port.addEventListener('mouseleave', () => handleHover(rackId, i, false));
-                
-                container.appendChild(port);
-            }
-        }
+        let activePort = null; // {dioId, portNum} do modal aberto
+        let connectingFrom = null; // Quando aguardando o segundo clique para patch cord
 
-        function handlePortClick(rackId, portNum) {
-            const portEl = getPortEl(rackId, portNum);
+        // Inicializa com 2 DIOs
+        window.onload = () => {
+            addNewDIO('DIO A');
+            addNewDIO('DIO B');
+        };
+
+        function addNewDIO(customName = null) {
+            dioCounter++;
+            const dioId = `dio-${Date.now()}-${dioCounter}`;
+            const name = customName || `DIO ${dioCounter}`;
             
-            // Se já estiver conectada, abre modal de informações/exclusão (ótimo para mobile)
-            if (portEl.classList.contains('connected')) {
-                const connId = portEl.dataset.connId;
-                const conn = connections.find(c => c.id === connId);
-                if (conn) {
-                    openModal(conn);
-                }
-                return;
+            const newDio = { id: dioId, name: name, ports: {} };
+            for(let i=1; i<=PORTS_PER_DIO; i++) {
+                newDio.ports[i] = { info: '' };
             }
-
-            if (rackId === 'dioA') {
-                selectedA = (selectedA === portNum) ? null : portNum;
-            } else if (rackId === 'dioB') {
-                selectedB = (selectedB === portNum) ? null : portNum;
-            }
-
-            updateSelectionUI();
-
-            if (selectedA !== null && selectedB !== null) {
-                createConnection(selectedA, selectedB);
-                selectedA = null;
-                selectedB = null;
-                updateSelectionUI();
-            }
+            dataStore.dios.push(newDio);
+            renderWorkspace();
         }
 
-        function createConnection(portA, portB) {
-            const connId = Date.now().toString();
-            connections.push({ id: connId, a: portA, b: portB });
-            renderConnections();
-        }
+        function renderWorkspace() {
+            const container = document.getElementById('rackContainer');
+            container.innerHTML = '';
 
-        function removeConnection(connId) {
-            connections = connections.filter(c => c.id !== connId);
-            closeModal();
-            renderConnections();
-        }
-
-        function getPortEl(rackId, portNum) {
-            return document.querySelector(`.port[data-rack="${rackId}"][data-port="${portNum}"]`);
-        }
-
-        function updateSelectionUI() {
-            document.querySelectorAll('.port').forEach(p => {
-                if (!p.classList.contains('connected')) {
-                    p.classList.remove('selected');
-                }
-            });
-
-            if (selectedA !== null) getPortEl('dioA', selectedA).classList.add('selected');
-            if (selectedB !== null) getPortEl('dioB', selectedB).classList.add('selected');
-        }
-
-        function renderConnections() {
-            document.querySelectorAll('.port').forEach(p => {
-                p.classList.remove('connected', 'highlight');
-                p.removeAttribute('data-conn-id');
-            });
-
-            const tbody = document.querySelector('#connectionsTable tbody');
-            tbody.innerHTML = '';
-
-            connections.forEach(conn => {
-                const pA = getPortEl('dioA', conn.a);
-                const pB = getPortEl('dioB', conn.b);
+            dataStore.dios.forEach(dio => {
+                const rackDiv = document.createElement('div');
+                rackDiv.className = 'rack';
                 
-                pA.classList.add('connected');
-                pA.dataset.connId = conn.id;
-                pB.classList.add('connected');
-                pB.dataset.connId = conn.id;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>Porta ${conn.a}</td>
-                    <td>Porta ${conn.b}</td>
-                    <td><button class="delete-btn" onclick="removeConnection('${conn.id}')">Excluir</button></td>
+                rackDiv.innerHTML = `
+                    <div class="rack-header">
+                        <span class="brand">SIEMON LightVerse</span>
+                        <span style="color:#aaa;">${dio.name}</span>
+                    </div>
+                    <div class="dio-panel" id="${dio.id}"></div>
                 `;
                 
-                tr.addEventListener('mouseenter', () => highlightConnection(conn.id, true));
-                tr.addEventListener('mouseleave', () => highlightConnection(conn.id, false));
+                container.appendChild(rackDiv);
+                
+                const panel = rackDiv.querySelector('.dio-panel');
+                for (let i = 1; i <= PORTS_PER_DIO; i++) {
+                    const port = document.createElement('div');
+                    port.className = 'port';
+                    port.innerHTML = i;
+                    port.dataset.dio = dio.id;
+                    port.dataset.port = i;
+                    
+                    // Verifica se está conectado
+                    if (isPortConnected(dio.id, i)) {
+                        port.classList.add('connected');
+                    }
 
-                tbody.appendChild(tr);
+                    port.addEventListener('click', () => handlePortClick(dio.id, i));
+                    port.addEventListener('mouseenter', () => handleHover(dio.id, i, true));
+                    port.addEventListener('mouseleave', () => handleHover(dio.id, i, false));
+                    
+                    panel.appendChild(port);
+                }
             });
         }
 
-        function handleHover(rackId, portNum, isEntering) {
-            const portEl = getPortEl(rackId, portNum);
-            if (portEl.classList.contains('connected')) {
-                highlightConnection(portEl.dataset.connId, isEntering);
+        function handlePortClick(dioId, portNum) {
+            if (connectingFrom) {
+                // Previne conectar na mesma porta ou no mesmo DIO (opcional, mas liberado aqui)
+                if (connectingFrom.dioId === dioId && connectingFrom.portNum === portNum) {
+                    cancelConnection();
+                    return;
+                }
+                finishConnection(dioId, portNum);
+            } else {
+                openModal(dioId, portNum);
             }
         }
 
-        function highlightConnection(connId, isActive) {
-            document.querySelectorAll(`.port[data-conn-id="${connId}"]`).forEach(p => {
-                if (isActive) p.classList.add('highlight');
-                else p.classList.remove('highlight');
-            });
-        }
+        function openModal(dioId, portNum) {
+            activePort = { dioId, portNum };
+            const dio = dataStore.dios.find(d => d.id === dioId);
+            
+            document.getElementById('modalTitle').innerText = `${dio.name} - Porta ${portNum}`;
+            document.getElementById('portInfoInput').value = dio.ports[portNum].info;
 
-        function openModal(conn) {
-            activeModalConnId = conn.id;
-            document.getElementById('modalDesc').innerHTML = `Rack A (Porta ${conn.a}) <b>⟷</b> Rack B (Porta ${conn.b})`;
-            document.getElementById('connModal').style.display = 'flex';
-            highlightConnection(conn.id, true);
+            const connId = getPortConnectionId(dioId, portNum);
+            const statusDiv = document.getElementById('connStatus');
+            const btnConnect = document.getElementById('btnConnect');
+            const btnDisconnect = document.getElementById('btnDisconnect');
+
+            if (connId) {
+                const conn = dataStore.connections.find(c => c.id === connId);
+                const target = (conn.portA.dioId === dioId && conn.portA.portNum === portNum) ? conn.portB : conn.portA;
+                const targetDio = dataStore.dios.find(d => d.id === target.dioId);
+                
+                statusDiv.style.display = 'block';
+                statusDiv.innerHTML = `<strong>Conectado a:</strong> ${targetDio.name} - Porta ${target.portNum}`;
+                btnConnect.style.display = 'none';
+                btnDisconnect.style.display = 'block';
+            } else {
+                statusDiv.style.display = 'none';
+                btnConnect.style.display = 'block';
+                btnDisconnect.style.display = 'none';
+            }
+
+            document.getElementById('portModal').style.display = 'flex';
         }
 
         function closeModal() {
-            if (activeModalConnId) {
-                highlightConnection(activeModalConnId, false);
-                activeModalConnId = null;
-            }
-            document.getElementById('connModal').style.display = 'none';
+            document.getElementById('portModal').style.display = 'none';
+            activePort = null;
         }
 
-        document.getElementById('modalDeleteBtn').addEventListener('click', () => {
-            if (activeModalConnId) removeConnection(activeModalConnId);
-        });
+        function savePortInfo() {
+            if (activePort) {
+                const dio = dataStore.dios.find(d => d.id === activePort.dioId);
+                dio.ports[activePort.portNum].info = document.getElementById('portInfoInput').value;
+                closeModal();
+            }
+        }
 
-        // Inicializar aplicação
-        createDIO('dioA');
-        createDIO('dioB');
+        function startConnection() {
+            connectingFrom = activePort;
+            closeModal();
+            document.getElementById('statusBar').style.display = 'block';
+            
+            // Destaca visualmente a porta origem
+            const portEl = document.querySelector(`.port[data-dio="${activePort.dioId}"][data-port="${activePort.portNum}"]`);
+            if (portEl) portEl.classList.add('highlight');
+        }
+
+        function cancelConnection() {
+            if (connectingFrom) {
+                const portEl = document.querySelector(`.port[data-dio="${connectingFrom.dioId}"][data-port="${connectingFrom.portNum}"]`);
+                if (portEl) portEl.classList.remove('highlight');
+            }
+            connectingFrom = null;
+            document.getElementById('statusBar').style.display = 'none';
+        }
+
+        function finishConnection(dioId, portNum) {
+            // Remove conexões existentes nas portas selecionadas
+            removeConnectionByPort(connectingFrom.dioId, connectingFrom.portNum);
+            removeConnectionByPort(dioId, portNum);
+
+            const newConn = {
+                id: Date.now().toString(),
+                portA: { ...connectingFrom },
+                portB: { dioId, portNum }
+            };
+            
+            dataStore.connections.push(newConn);
+            cancelConnection();
+            renderWorkspace();
+        }
+
+        function removeConnection() {
+            if (activePort) {
+                removeConnectionByPort(activePort.dioId, activePort.portNum);
+                closeModal();
+                renderWorkspace();
+            }
+        }
+
+        function removeConnectionByPort(dioId, portNum) {
+            dataStore.connections = dataStore.connections.filter(c => 
+                !(c.portA.dioId === dioId && c.portA.portNum === portNum) &&
+                !(c.portB.dioId === dioId && c.portB.portNum === portNum)
+            );
+        }
+
+        function getPortConnectionId(dioId, portNum) {
+            const conn = dataStore.connections.find(c => 
+                (c.portA.dioId === dioId && c.portA.portNum === portNum) ||
+                (c.portB.dioId === dioId && c.portB.portNum === portNum)
+            );
+            return conn ? conn.id : null;
+        }
+
+        function isPortConnected(dioId, portNum) {
+            return getPortConnectionId(dioId, portNum) !== null;
+        }
+
+        function handleHover(dioId, portNum, isEntering) {
+            const connId = getPortConnectionId(dioId, portNum);
+            if (connId) {
+                const conn = dataStore.connections.find(c => c.id === connId);
+                const elA = document.querySelector(`.port[data-dio="${conn.portA.dioId}"][data-port="${conn.portA.portNum}"]`);
+                const elB = document.querySelector(`.port[data-dio="${conn.portB.dioId}"][data-port="${conn.portB.portNum}"]`);
+                
+                if (isEntering) {
+                    if(elA) elA.classList.add('highlight');
+                    if(elB) elB.classList.add('highlight');
+                } else {
+                    if(elA) elA.classList.remove('highlight');
+                    if(elB) elB.classList.remove('highlight');
+                }
+            }
+        }
+
+        // --- GERAÇÃO DE PDF ---
+        function generatePDF() {
+            // Prepara os dados para o HTML oculto
+            document.getElementById('pdfDate').innerText = new Date().toLocaleString('pt-BR');
+            const container = document.getElementById('pdfTablesContainer');
+            container.innerHTML = '';
+
+            dataStore.dios.forEach(dio => {
+                let tableHTML = `
+                    <h3>${dio.name}</h3>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%">Porta</th>
+                                <th style="width: 50%">Informação / Destino da Via</th>
+                                <th style="width: 40%">Patch Cord (Conectado a)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                for(let i=1; i<=PORTS_PER_DIO; i++) {
+                    const info = dio.ports[i].info || '-';
+                    const connId = getPortConnectionId(dio.id, i);
+                    let connectedStr = 'Livre';
+                    
+                    if (connId) {
+                        const conn = dataStore.connections.find(c => c.id === connId);
+                        const target = (conn.portA.dioId === dio.id && conn.portA.portNum === i) ? conn.portB : conn.portA;
+                        const targetDio = dataStore.dios.find(d => d.id === target.dioId);
+                        connectedStr = `${targetDio.name} - Porta ${target.portNum}`;
+                    }
+
+                    // Só adiciona na tabela se tiver info ou estiver conectado (para não gerar um PDF gigante à toa)
+                    if (info !== '-' || connectedStr !== 'Livre') {
+                        tableHTML += `
+                            <tr>
+                                <td>${i}</td>
+                                <td>${info}</td>
+                                <td>${connectedStr}</td>
+                            </tr>
+                        `;
+                    }
+                }
+                tableHTML += `</tbody></table><br>`;
+                container.innerHTML += tableHTML;
+            });
+
+            if(container.innerHTML === '') {
+                container.innerHTML = '<p>Nenhuma informação ou conexão registrada ainda.</p>';
+            }
+
+            // Mostra a div, gera o PDF e esconde de novo
+            const element = document.getElementById('pdf-report');
+            element.style.display = 'block';
+            
+            const opt = {
+                margin:       10,
+                filename:     'Relatorio_Comissionamento_Siemon.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.display = 'none';
+            });
+        }
     </script>
 </body>
 </html>
